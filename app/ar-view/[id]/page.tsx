@@ -2,7 +2,7 @@
 
 import { Canvas } from "@react-three/fiber";
 import { useParams } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { OrbitControls, useGLTF } from "@react-three/drei";
 
 const models: { [key: string]: string } = {
@@ -21,20 +21,84 @@ export default function ARViewPage() {
   const id = params?.id as string;
   const modelUrl = models[id];
 
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [cameraStarted, setCameraStarted] = useState(false);
+
+  const startCamera = async () => {
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "environment" },
+          audio: false,
+        });
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          setCameraStarted(true);
+        }
+      } catch (err) {
+        console.error("Camera error:", err);
+      }
+    } else {
+      alert("Camera not supported on this device/browser.");
+    }
+  };
+
   if (!modelUrl) {
     return <div>Product not found</div>;
   }
 
   return (
-    <div style={{ height: "100vh", width: "100%" }}>
-      <Canvas>
-        <ambientLight intensity={0.8} />
-        <directionalLight position={[10, 10, 5]} intensity={1} />
-        <Suspense fallback={null}>
-          <FurnitureModel url={modelUrl} />
-          <OrbitControls />
-        </Suspense>
-      </Canvas>
+    <div style={{ position: "relative", height: "100vh", overflow: "hidden" }}>
+      {/* Camera background */}
+      <video
+        ref={videoRef}
+        autoPlay
+        playsInline
+        muted
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          zIndex: 1,
+          backgroundColor: "#000", // fallback black background if no camera
+        }}
+      />
+
+      {/* Transparent Canvas */}
+      {cameraStarted && (
+        <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", zIndex: 2 }}>
+          <Canvas>
+            <ambientLight intensity={0.8} />
+            <directionalLight position={[10, 10, 5]} intensity={1} />
+            <Suspense fallback={null}>
+              <FurnitureModel url={modelUrl} />
+              <OrbitControls enableZoom={true} />
+            </Suspense>
+          </Canvas>
+        </div>
+      )}
+
+      {/* Start Camera Button */}
+      {!cameraStarted && (
+        <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", zIndex: 3 }}>
+          <button
+            onClick={startCamera}
+            style={{
+              padding: "1rem 2rem",
+              fontSize: "1.5rem",
+              borderRadius: "8px",
+              backgroundColor: "#0070f3",
+              color: "#fff",
+              border: "none",
+            }}
+          >
+            Start Camera
+          </button>
+        </div>
+      )}
     </div>
   );
 }
