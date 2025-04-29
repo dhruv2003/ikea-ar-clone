@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from 'next/image';
 
 const products = [
   {
@@ -28,7 +29,14 @@ export default function HomePage() {
         {products.map((product) => (
           <Link key={product.id} href={`/product/${product.id}`} style={{ textDecoration: "none", color: "inherit" }}>
             <div style={{ border: "1px solid #ddd", borderRadius: "8px", padding: "1rem", textAlign: "center" }}>
-              <img src={product.image} alt={product.name} style={{ width: "100%", height: "200px", objectFit: "cover" }} />
+              <Image 
+                src={product.image} 
+                alt={product.name} 
+                width={500} 
+                height={300} 
+                priority={true} 
+                style={{ borderRadius: "8px" }}
+              />
               <h2 style={{ marginTop: "0.5rem", fontSize: "1.2rem" }}>{product.name}</h2>
             </div>
           </Link>

@@ -2,6 +2,7 @@
 
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import Image from 'next/image';
 
 const products = {
   "chair-1": {
@@ -34,7 +35,7 @@ export default function ProductPage() {
 
       <h1 style={{ fontSize: "2rem", margin: "1rem 0" }}>{product.name}</h1>
 
-      <img src={product.image} alt={product.name} style={{ width: "100%", maxWidth: "600px", height: "auto", borderRadius: "8px" }} />
+      <Image src={product.image} alt={product.name} width={500} height={300} />
 
       <div style={{ marginTop: "2rem" }}>
         <Link href={`/ar-view/${id}`}>

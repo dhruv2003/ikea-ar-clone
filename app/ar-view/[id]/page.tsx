@@ -2,7 +2,7 @@
 
 import { Canvas } from "@react-three/fiber";
 import { useParams } from "next/navigation";
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useRef, useState } from "react";
 import { OrbitControls, useGLTF } from "@react-three/drei";
 
 const models: { [key: string]: string } = {
