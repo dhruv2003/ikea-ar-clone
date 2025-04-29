@@ -2,8 +2,9 @@
 
 import { Canvas } from "@react-three/fiber";
 import { useParams } from "next/navigation";
-import { Suspense, useRef, useState } from "react";
-import { OrbitControls, useGLTF } from "@react-three/drei";
+import { Suspense, useEffect, useRef, useState } from "react";
+import { OrbitControls, useGLTF, DragControls } from "@react-three/drei";
+import * as THREE from "three";
 
 const models: { [key: string]: string } = {
   "chair-1": "/chair_model.glb",
@@ -13,7 +14,9 @@ const models: { [key: string]: string } = {
 
 function FurnitureModel({ url }: { url: string }) {
   const { scene } = useGLTF(url);
-  return <primitive object={scene} scale={0.5} />;
+  const sceneRef = useRef<THREE.Object3D>(scene);
+
+  return <primitive ref={sceneRef} object={scene} scale={0.5} />;
 }
 
 export default function ARViewPage() {
@@ -23,6 +26,7 @@ export default function ARViewPage() {
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const [cameraStarted, setCameraStarted] = useState(false);
+  const [objects, setObjects] = useState<THREE.Object3D[]>([]);
 
   const startCamera = async () => {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -74,8 +78,11 @@ export default function ARViewPage() {
             <ambientLight intensity={0.8} />
             <directionalLight position={[10, 10, 5]} intensity={1} />
             <Suspense fallback={null}>
-              <FurnitureModel url={modelUrl} />
-              <OrbitControls enableZoom={true} />
+              {/* Make draggable */}
+              <DragControls>
+                <FurnitureModel url={modelUrl} />
+              </DragControls>
+              <OrbitControls enableZoom={true} enablePan={false} />
             </Suspense>
           </Canvas>
         </div>
