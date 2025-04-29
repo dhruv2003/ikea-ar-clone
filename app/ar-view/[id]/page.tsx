@@ -2,7 +2,7 @@
 
 import { Canvas } from "@react-three/fiber";
 import { useParams } from "next/navigation";
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useRef, useState } from "react";
 import { OrbitControls, useGLTF, DragControls } from "@react-three/drei";
 import * as THREE from "three";
 
@@ -26,7 +26,6 @@ export default function ARViewPage() {
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const [cameraStarted, setCameraStarted] = useState(false);
-  const [objects, setObjects] = useState<THREE.Object3D[]>([]);
 
   const startCamera = async () => {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
