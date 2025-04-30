@@ -6,7 +6,6 @@ import { Suspense, useRef, useState } from "react";
 import { OrbitControls, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import { useGesture } from "@use-gesture/react";
-import { useSpring, a } from "@react-spring/three";
 
 const models: { [key: string]: string } = {
   "chair-1": "/chair_model.glb",
@@ -25,9 +24,9 @@ function PlacedModel({
 }) {
   const { scene } = useGLTF(url);
   return (
-    <a.group position={position} scale={scale}>
+    <group position={position} scale={[scale, scale, scale]}>
       <primitive object={scene} />
-    </a.group>
+    </group>
   );
 }
 
@@ -39,14 +38,14 @@ export default function ARViewPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [cameraStarted, setCameraStarted] = useState(false);
   const [placedItems, setPlacedItems] = useState<{ position: THREE.Vector3; scale: number }[]>([]);
-  const [scaleSpring, api] = useSpring(() => ({ scale: 0.5 }));
+  const [scale, setScale] = useState(0.5);
 
   const cameraRef = useRef<THREE.Camera | null>(null);
 
   const bind = useGesture({
     onPinch: ({ offset: [d] }) => {
       const s = THREE.MathUtils.clamp(d / 100 + 0.5, 0.2, 2);
-      api.start({ scale: s });
+      setScale(s);
     },
   });
 
@@ -77,7 +76,7 @@ export default function ARViewPage() {
     const direction = new THREE.Vector3();
     cameraRef.current.getWorldDirection(direction);
     const newPosition = cameraRef.current.position.clone().add(direction.multiplyScalar(2)).setY(0);
-    setPlacedItems([...placedItems, { position: newPosition, scale: scaleSpring.scale.get() }]);
+    setPlacedItems([...placedItems, { position: newPosition, scale }]);
   };
 
   if (!modelUrl) return <div>Product not found</div>;
