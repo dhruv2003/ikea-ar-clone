@@ -26,14 +26,22 @@ const products = [
 export default function HomePage() {
   return (
     <div className={styles.container}>
-      <h1 style={{ textAlign: "center", marginBottom: "2rem" }}>Welcome to IKEA AR Clone</h1>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "1.5rem" }}>
+      <h1 className={styles.title}>Welcome to IKEA AR Clone</h1>
+      <div className={styles.productGrid}>
         {products.map((product) => (
           <div key={product.id} className={styles.card}>
-            <Image src={product.image} alt={product.name} width={300} height={200} />
-            <div style={{ padding: "1rem" }}>
-              <h2>{product.name}</h2>
-              <p>{product.description}</p>
+            <div className={styles.imageContainer}>
+              <Image 
+                src={product.image} 
+                alt={product.name} 
+                fill
+                style={{ objectFit: 'cover' }}
+                priority
+              />
+            </div>
+            <div className={styles.cardContent}>
+              <h2 className={styles.productName}>{product.name}</h2>
+              <p className={styles.productDescription}>{product.description}</p>
               <Link href={`/product/${product.id}`}>
                 <button className={`${styles.button} ${styles.primary}`}>View in AR</button>
               </Link>

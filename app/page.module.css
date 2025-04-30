@@ -1,54 +1,315 @@
-.button {
-  padding: 1rem 2rem;
-  font-size: 1rem;
-  font-weight: 600;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.button.primary {
-  background-color: #0070f3;
-  color: #fff;
-}
-
-.button.primary:hover {
-  background-color: #005ccc;
-  transform: scale(1.05);
-}
-
-.button.secondary {
-  background-color: #f5f5f5;
-  color: #333;
-  border: 1px solid #ddd;
-}
-
-.button.secondary:hover {
-  background-color: #eaeaea;
-  transform: scale(1.05);
-}
-
+/* Main container styling */
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 2rem 1rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  background-color: #f7f7f7;
 }
 
+/* Page title styling */
+.title {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  font-size: 2.5rem;
+  color: #0051ba; /* IKEA blue */
+  position: relative;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.title::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background-color: #ffda1a; /* IKEA yellow */
+  border-radius: 2px;
+}
+
+/* Products grid */
+.productGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+/* Product card styling */
 .card {
-  border: 1px solid #ddd;
+  background-color: white;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-  transition: box-shadow 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #eaeaea;
 }
 
 .card:hover {
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  transform: translateY(-6px);
+  box-shadow: 0 10px 18px rgba(0, 81, 186, 0.12);
 }
 
-.card img {
+.cardContent {
+  padding: 1.5rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+}
+
+.productName {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #111;
+  font-weight: 600;
+}
+
+.productDescription {
+  color: #666;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+  flex-grow: 1;
+}
+
+/* Image container for consistent sizing */
+.imageContainer {
+  position: relative;
   width: 100%;
-  height: auto;
-  object-fit: cover;
+  height: 280px;
+  background-color: #f5f5f5;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.imageContainer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(255,255,255,0) 70%, rgba(255,255,255,0.1) 100%);
+  z-index: 1;
+}
+
+.imageContainer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+}
+
+/* Button styling */
+.button {
+  padding: 0.9rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  text-align: center;
+  display: inline-block;
+  width: 100%;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.primary {
+  background-color: #0051ba; /* IKEA blue */
+  color: white;
+}
+
+.primary:hover {
+  background-color: #003d8e;
+  transform: scale(1.02);
+  box-shadow: 0 4px 8px rgba(0, 81, 186, 0.25);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .productGrid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .title {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  .cardContent {
+    padding: 1.2rem;
+  }
+  
+  .productName {
+    font-size: 1.3rem;
+  }
+  
+  .imageContainer {
+    height: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 1.5rem 1rem;
+    background-color: #f5f5f5;
+  }
+  
+  .productGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .title {
+    font-size: 1.8rem;
+  }
+  
+  .imageContainer {
+    height: 220px;
+  }
+  
+  .card {
+    border-radius: 6px;
+  }
+}
+
+/* IKEA-like body background and styling */
+.ikeaTheme {
+  /* Local class as a hook that can be exported */
+  background-color: #f8f8f8;
+  margin: 0;
+  padding: 0;
+  font-family: 'Noto Sans', 'Segoe UI', Tahoma, sans-serif;
+  color: #111;
+}
+
+/* For global styles, use :global with actual selectors */
+.globalStyles :global(.ikea-container) {
+  background-color: #fff;
+  max-width: 1400px;
+  margin: 0 auto;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+}
+
+/* Improve image display */
+.imageContainer {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  background-color: #f5f5f5;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.imageContainer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(255,255,255,0) 70%, rgba(255,255,255,0.1) 100%);
+  z-index: 1;
+}
+
+.imageContainer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+}
+
+/* Enhanced button styling more like IKEA */
+.button {
+  padding: 0.8rem 1.5rem;
+  border-radius: 24px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  text-align: center;
+  display: inline-block;
+  width: 100%;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.primary {
+  background-color: #0058a3; /* IKEA blue */
+  color: white;
+}
+
+.primary:hover {
+  background-color: #004f93;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 88, 163, 0.25);
+}
+
+/* Card styling enhancements */
+.card {
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e9e9e9;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 20px rgba(0, 88, 163, 0.12);
+}
+
+/* Media queries enhancements */
+@media (max-width: 768px) {
+  .productGrid {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.2rem;
+  }
+  
+  .imageContainer {
+    height: 200px;
+  }
+  
+  .button {
+    padding: 0.7rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 1rem 0.8rem;
+    background-color: #f8f8f8;
+  }
+  
+  .button {
+    border-radius: 20px;
+    padding: 0.7rem 1rem;
+  }
 }

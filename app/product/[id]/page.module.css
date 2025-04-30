@@ -1,0 +1,459 @@
+/* Product detail page container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  background-color: #f7f7f7;
+}
+
+/* Back link styling */
+.backLink {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  color: #0058a3;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: color 0.2s ease, transform 0.2s ease;
+  padding: 0.5rem 0;
+  position: relative;
+}
+
+.backLink:hover {
+  color: #004f93;
+  transform: translateX(-4px);
+}
+
+.backLink::before {
+  content: '←';
+  margin-right: 6px;
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.backLink:hover::before {
+  transform: translateX(-3px);
+}
+
+/* Breadcrumb navigation */
+.breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem 0;
+  font-size: 0.875rem;
+  color: #666;
+}
+
+.breadcrumbs li {
+  display: flex;
+  align-items: center;
+}
+
+.breadcrumbs li:not(:last-child)::after {
+  content: '/';
+  margin: 0 0.5rem;
+  color: #ccc;
+}
+
+.breadcrumbs a {
+  color: #666;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.breadcrumbs a:hover {
+  color: #0058a3;
+}
+
+.breadcrumbs .current {
+  font-weight: 500;
+  color: #111;
+}
+
+/* Product layout */
+.productLayout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 960px) {
+  .productLayout {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+}
+
+/* Product title styling */
+.productTitle {
+  font-size: 2.5rem;
+  margin: 0 0 1rem;
+  font-weight: 700;
+  color: #111;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+
+/* Product price styling */
+.productPrice {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.oldPrice {
+  text-decoration: line-through;
+  color: #999;
+  font-size: 1.25rem;
+  margin-right: 0.75rem;
+}
+
+.discountBadge {
+  background-color: #cc0008;
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-left: 0.75rem;
+}
+
+/* Product image container - FIXED to prevent cropping */
+.imageContainer {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+  position: relative;
+  background-color: #f5f5f5;
+  width: 100%;
+  padding-top: 75%; /* 4:3 aspect ratio */
+  height: 0;
+}
+
+.imageContainer img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Changed from cover to contain to prevent cropping */
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.imageZoomHint {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+  z-index: 2;
+}
+
+.imageZoomHint:hover {
+  opacity: 1;
+}
+
+.imageContainer:hover img {
+  transform: scale(1.03);
+}
+
+/* Thumbnail gallery */
+.thumbnailGallery {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.thumbnail {
+  width: 64px;
+  height: 64px;
+  border-radius: 4px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  background-color: #f5f5f5;
+  overflow: hidden;
+}
+
+.thumbnail.active, .thumbnail:hover {
+  border-color: #0058a3;
+  opacity: 1;
+}
+
+.thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Product info section */
+.productInfo {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  margin: 2rem 0;
+  line-height: 1.6;
+}
+
+.productInfo h2 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  color: #111;
+  font-weight: 600;
+}
+
+.productInfo p {
+  margin-bottom: 1rem;
+  color: #444;
+}
+
+/* Product specifications */
+.productSpecs {
+  margin-top: 1.5rem;
+}
+
+.specRow {
+  display: flex;
+  border-bottom: 1px solid #f0f0f0;
+  padding: 0.75rem 0;
+}
+
+.specLabel {
+  flex: 0 0 35%;
+  color: #666;
+}
+
+.specValue {
+  flex: 0 0 65%;
+  font-weight: 500;
+  color: #333;
+}
+
+/* AR button styling - improved */
+.button {
+  padding: 0.8rem 1.5rem;
+  border-radius: 24px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+}
+
+.primary {
+  background-color: #0058a3; /* IKEA blue */
+  color: white;
+  box-shadow: 0 4px 6px rgba(0, 88, 163, 0.2);
+}
+
+.primary:hover {
+  background-color: #004f93;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 88, 163, 0.25);
+}
+
+.primary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 3px rgba(0, 88, 163, 0.25);
+}
+
+.buttonIcon {
+  margin-right: 0.75rem;
+  font-size: 1.2rem;
+}
+
+.buttonRipple {
+  position: absolute;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.3);
+  transform: scale(0);
+  animation: rippleEffect 0.8s linear;
+}
+
+@keyframes rippleEffect {
+  to {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+/* Related products section */
+.relatedProducts {
+  margin-top: 3rem;
+}
+
+.relatedProductsTitle {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: #111;
+  font-weight: 600;
+  text-align: center;
+}
+
+.relatedProductsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.relatedProductCard {
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.relatedProductCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 88, 163, 0.15);
+}
+
+.relatedProductImage {
+  width: 100%;
+  height: 0;
+  padding-top: 100%; /* 1:1 aspect ratio */
+  position: relative;
+  background-color: #f5f5f5;
+}
+
+.relatedProductImage img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.relatedProductInfo {
+  padding: 1rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.relatedProductName {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  color: #111;
+}
+
+.relatedProductPrice {
+  margin-top: auto;
+  font-weight: 600;
+  color: #333;
+}
+
+/* IKEA-like styling hook */
+.ikeaTheme {
+  background-color: #f8f8f8;
+  margin: 0;
+  padding: 0;
+  font-family: 'Noto Sans', 'Segoe UI', Tahoma, sans-serif;
+  color: #111;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .productTitle {
+    font-size: 2rem;
+  }
+  
+  .button {
+    padding: 0.7rem 1rem;
+  }
+  
+  .breadcrumbs {
+    font-size: 0.75rem;
+  }
+  
+  .thumbnailGallery {
+    gap: 0.35rem;
+  }
+  
+  .thumbnail {
+    width: 56px;
+    height: 56px;
+  }
+  
+  .relatedProductsGrid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 1rem 0.8rem;
+    background-color: #f8f8f8;
+  }
+  
+  .productTitle {
+    font-size: 1.8rem;
+  }
+  
+  .button {
+    border-radius: 20px;
+    padding: 0.7rem 1rem;
+    width: 100%;
+  }
+  
+  .imageContainer {
+    border-radius: 8px;
+    padding-top: 85%; /* Slightly taller on mobile */
+  }
+  
+  .relatedProductsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  .specRow {
+    flex-direction: column;
+    padding: 0.5rem 0;
+  }
+  
+  .specLabel {
+    flex: 0 0 100%;
+    margin-bottom: 0.2rem;
+  }
+  
+  .specValue {
+    flex: 0 0 100%;
+  }
+}
