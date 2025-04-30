@@ -1,6 +1,6 @@
 "use client";
 
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { useParams } from "next/navigation";
 import { Suspense, useRef, useState } from "react";
 import { OrbitControls, useGLTF, DragControls } from "@react-three/drei";
@@ -12,11 +12,27 @@ const models: { [key: string]: string } = {
   "sofa-1": "/sofa_model.glb",
 };
 
-function FurnitureModel({ url }: { url: string }) {
+// Furniture Model with Snap-to-Ground
+function FurnitureModel({
+  url,
+  groupRef,
+}: {
+  url: string;
+  groupRef: React.RefObject<THREE.Group | null>;
+}) {
   const { scene } = useGLTF(url);
-  const sceneRef = useRef<THREE.Object3D>(scene);
 
-  return <primitive ref={sceneRef} object={scene} scale={0.5} />;
+  useFrame(() => {
+    if (groupRef.current) {
+      groupRef.current.position.y = 0; // Always keep on ground
+    }
+  });
+
+  return (
+    <group ref={groupRef}>
+      <primitive object={scene} scale={0.5} />
+    </group>
+  );
 }
 
 export default function ARViewPage() {
@@ -25,34 +41,36 @@ export default function ARViewPage() {
   const modelUrl = models[id];
 
   const videoRef = useRef<HTMLVideoElement>(null);
+  const groupRef = useRef<THREE.Group>(null);
   const [cameraStarted, setCameraStarted] = useState(false);
 
   const startCamera = async () => {
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: "environment" },
-          audio: false,
-        });
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          setCameraStarted(true);
-        }
-      } catch (err) {
-        console.error("Camera error:", err);
+    try {
+      if (!navigator.mediaDevices?.getUserMedia) {
+        alert("Camera not supported on this device/browser.");
+        return;
       }
-    } else {
-      alert("Camera not supported on this device/browser.");
+
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "environment" },
+        audio: false,
+      });
+
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        setCameraStarted(true);
+      }
+    } catch (err) {
+      console.error("Camera error:", err);
+      alert("Failed to access camera.");
     }
   };
 
-  if (!modelUrl) {
-    return <div>Product not found</div>;
-  }
+  if (!modelUrl) return <div>Product not found</div>;
 
   return (
     <div style={{ position: "relative", height: "100vh", overflow: "hidden" }}>
-      {/* Camera background */}
+      {/* Camera Background */}
       <video
         ref={videoRef}
         autoPlay
@@ -66,20 +84,28 @@ export default function ARViewPage() {
           height: "100%",
           objectFit: "cover",
           zIndex: 1,
-          backgroundColor: "#000", // fallback black background if no camera
+          backgroundColor: "#000",
         }}
       />
 
-      {/* Transparent Canvas */}
+      {/* Canvas for 3D */}
       {cameraStarted && (
-        <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", zIndex: 2 }}>
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            zIndex: 2,
+          }}
+        >
           <Canvas>
             <ambientLight intensity={0.8} />
             <directionalLight position={[10, 10, 5]} intensity={1} />
             <Suspense fallback={null}>
-              {/* Make draggable */}
               <DragControls>
-                <FurnitureModel url={modelUrl} />
+                <FurnitureModel url={modelUrl} groupRef={groupRef} />
               </DragControls>
               <OrbitControls enableZoom={true} enablePan={false} />
             </Suspense>
@@ -89,7 +115,15 @@ export default function ARViewPage() {
 
       {/* Start Camera Button */}
       {!cameraStarted && (
-        <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", zIndex: 3 }}>
+        <div
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            zIndex: 3,
+          }}
+        >
           <button
             onClick={startCamera}
             style={{
