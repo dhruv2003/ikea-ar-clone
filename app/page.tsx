@@ -1,104 +1,41 @@
-"use client";
-
-import Link from "next/link";
 import Image from "next/image";
+import styles from "./page.module.css";
 
 const products = [
   {
-    id: "chair-1",
-    name: "Modern Chair",
-    image: "/chair.png",
+    id: 1,
+    name: "Chair",
+    description: "A comfortable wooden chair.",
+    image: "/images/chair.jpg",
   },
   {
-    id: "table-1",
-    name: "Wooden Table",
-    image: "/table.png",
+    id: 2,
+    name: "Table",
+    description: "A sturdy dining table.",
+    image: "/images/table.jpg",
   },
   {
-    id: "sofa-1",
-    name: "Comfort Sofa",
-    image: "/sofa.png",
+    id: 3,
+    name: "Lamp",
+    description: "A stylish desk lamp.",
+    image: "/images/lamp.jpg",
   },
 ];
 
 export default function HomePage() {
   return (
-    <div style={{ padding: "2rem", maxWidth: "1200px", margin: "0 auto" }}>
-      <h1
-        style={{
-          fontSize: "2.5rem",
-          marginBottom: "2rem",
-          textAlign: "center",
-          fontWeight: "bold",
-        }}
-      >
-        Furniture Catalog
-      </h1>
-
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-          gap: "2rem",
-        }}
-      >
+    <div className={styles.container}>
+      <h1 style={{ textAlign: "center", marginBottom: "2rem" }}>Welcome to IKEA AR Clone</h1>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "1.5rem" }}>
         {products.map((product) => (
-          <Link
-          key={product.id}
-          href={`/product/${product.id}`}
-          style={{ textDecoration: "none", color: "inherit" }}
-        >
-          <div
-            style={{
-              border: "1px solid #eee",
-              borderRadius: "12px",
-              overflow: "hidden",
-              backgroundColor: "#fff",
-              boxShadow: "0 4px 10px rgba(0,0,0,0.08)",
-              transition: "transform 0.2s, box-shadow 0.2s",
-              textAlign: "center",
-              cursor: "pointer",
-            }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLDivElement).style.transform = "scale(1.03)";
-              (e.currentTarget as HTMLDivElement).style.boxShadow = "0 8px 20px rgba(0,0,0,0.15)";
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLDivElement).style.transform = "scale(1)";
-              (e.currentTarget as HTMLDivElement).style.boxShadow = "0 4px 10px rgba(0,0,0,0.08)";
-            }}
-          >
-            <div style={{ position: "relative" }}>
-              <Image
-                src={product.image}
-                alt={product.name}
-                width={400}
-                height={300}
-                priority
-                style={{
-                  width: "100%",
-                  height: "auto",
-                  objectFit: "cover",
-                }}
-              />
-              {/* Text background box */}
-              <div
-                style={{
-                  position: "absolute",
-                  bottom: "0",
-                  width: "100%",
-                  background: "rgba(255, 255, 255, 0.9)",
-                  padding: "0.8rem 1rem",
-                  backdropFilter: "blur(2px)",
-                }}
-              >
-                <h2 style={{ fontSize: "1.3rem", margin: 0, color: "#333", fontWeight: "600" }}>
-                  {product.name}
-                </h2>
-              </div>
+          <div key={product.id} className={styles.card}>
+            <Image src={product.image} alt={product.name} width={300} height={200} />
+            <div style={{ padding: "1rem" }}>
+              <h2>{product.name}</h2>
+              <p>{product.description}</p>
+              <button className={`${styles.button} ${styles.primary}`}>View in AR</button>
             </div>
           </div>
-        </Link>
         ))}
       </div>
     </div>

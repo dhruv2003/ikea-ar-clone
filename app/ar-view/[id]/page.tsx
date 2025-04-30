@@ -5,7 +5,6 @@ import { useParams } from "next/navigation";
 import { Suspense, useRef, useState } from "react";
 import { OrbitControls, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
-import { useGesture } from "@use-gesture/react";
 
 const models: { [key: string]: string } = {
   "chair-1": "/chair_model.glb",
@@ -38,35 +37,32 @@ export default function ARViewPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [cameraStarted, setCameraStarted] = useState(false);
   const [placedItems, setPlacedItems] = useState<{ position: THREE.Vector3; scale: number }[]>([]);
-  const [scale, setScale] = useState(0.5);
+  const [scale] = useState(0.5);
 
   const cameraRef = useRef<THREE.Camera | null>(null);
 
-  const bind = useGesture({
-    onPinch: ({ offset: [d] }) => {
-      const s = THREE.MathUtils.clamp(d / 100 + 0.5, 0.2, 2);
-      setScale(s);
-    },
-  });
-
   const startCamera = async () => {
+    console.log("📷 Attempting to start camera");
+  
     try {
       if (!navigator.mediaDevices?.getUserMedia) {
         alert("Camera not supported on this device/browser.");
         return;
       }
-
+  
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: "environment" },
         audio: false,
       });
-
+  
+      console.log("✅ Camera stream received");
+  
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         setCameraStarted(true);
       }
     } catch (err) {
-      console.error("Camera error:", err);
+      console.error("❌ Camera error:", err);
       alert("Failed to access camera.");
     }
   };
@@ -82,8 +78,7 @@ export default function ARViewPage() {
   if (!modelUrl) return <div>Product not found</div>;
 
   return (
-    <div style={{ position: "relative", height: "100vh", overflow: "hidden" }} {...bind()}>
-      {/* Camera Background */}
+    <div style={{ position: "relative", height: "100vh", overflow: "hidden" }}>
       <video
         ref={videoRef}
         autoPlay
@@ -100,8 +95,6 @@ export default function ARViewPage() {
           backgroundColor: "#000",
         }}
       />
-
-      {/* Canvas for 3D */}
       {cameraStarted && (
         <div
           style={{
@@ -136,8 +129,6 @@ export default function ARViewPage() {
           </Canvas>
         </div>
       )}
-
-      {/* Start Camera Button */}
       {!cameraStarted && (
         <div
           style={{
@@ -148,17 +139,7 @@ export default function ARViewPage() {
             zIndex: 3,
           }}
         >
-          <button
-            onClick={startCamera}
-            style={{
-              padding: "1rem 2rem",
-              fontSize: "1.5rem",
-              borderRadius: "8px",
-              backgroundColor: "#0070f3",
-              color: "#fff",
-              border: "none",
-            }}
-          >
+          <button className="primary" onClick={startCamera}>
             Start Camera
           </button>
         </div>
