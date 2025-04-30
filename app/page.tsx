@@ -1,24 +1,25 @@
 import Image from "next/image";
+import Link from "next/link";
 import styles from "./page.module.css";
 
 const products = [
   {
-    id: 1,
+    id: "chair-1",  // Changed to match the IDs used in the AR view
     name: "Chair",
     description: "A comfortable wooden chair.",
-    image: "/images/chair.jpg",
+    image: "/images/chair.png",
   },
   {
-    id: 2,
+    id: "table-1",  // Changed to match the IDs used in the AR view
     name: "Table",
     description: "A sturdy dining table.",
-    image: "/images/table.jpg",
+    image: "/images/table.png",
   },
   {
-    id: 3,
-    name: "Lamp",
-    description: "A stylish desk lamp.",
-    image: "/images/lamp.jpg",
+    id: "sofa-1",   // Changed to match the IDs used in the AR view
+    name: "Sofa",
+    description: "A stylish sofa.",  // Fixed description which was incorrect
+    image: "/images/sofa.png",
   },
 ];
 
@@ -33,7 +34,9 @@ export default function HomePage() {
             <div style={{ padding: "1rem" }}>
               <h2>{product.name}</h2>
               <p>{product.description}</p>
-              <button className={`${styles.button} ${styles.primary}`}>View in AR</button>
+              <Link href={`/product/${product.id}`}>
+                <button className={`${styles.button} ${styles.primary}`}>View in AR</button>
+              </Link>
             </div>
           </div>
         ))}

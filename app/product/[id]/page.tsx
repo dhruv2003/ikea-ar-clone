@@ -7,15 +7,15 @@ import Image from "next/image";
 const products = {
   "chair-1": {
     name: "Modern Chair",
-    image: "/chair.png",
+    image: "/images/chair.png", // Update path if necessary
   },
   "table-1": {
     name: "Wooden Table",
-    image: "/table.png",
+    image: "/images/table.png", // Update path if necessary
   },
   "sofa-1": {
     name: "Comfort Sofa",
-    image: "/sofa.png",
+    image: "/images/sofa.png", // Update path if necessary
   },
 };
 
