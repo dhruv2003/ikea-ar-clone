@@ -1,10 +1,12 @@
 "use client";
 
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import { useParams } from "next/navigation";
 import { Suspense, useRef, useState } from "react";
-import { OrbitControls, useGLTF, DragControls } from "@react-three/drei";
+import { OrbitControls, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
+import { useGesture } from "@use-gesture/react";
+import { useSpring, a } from "@react-spring/three";
 
 const models: { [key: string]: string } = {
   "chair-1": "/chair_model.glb",
@@ -12,26 +14,20 @@ const models: { [key: string]: string } = {
   "sofa-1": "/sofa_model.glb",
 };
 
-// Furniture Model with Snap-to-Ground
-function FurnitureModel({
+function PlacedModel({
   url,
-  groupRef,
+  position,
+  scale,
 }: {
   url: string;
-  groupRef: React.RefObject<THREE.Group | null>;
+  position: THREE.Vector3;
+  scale: number;
 }) {
   const { scene } = useGLTF(url);
-
-  useFrame(() => {
-    if (groupRef.current) {
-      groupRef.current.position.y = 0; // Always keep on ground
-    }
-  });
-
   return (
-    <group ref={groupRef}>
-      <primitive object={scene} scale={0.5} />
-    </group>
+    <a.group position={position} scale={scale}>
+      <primitive object={scene} />
+    </a.group>
   );
 }
 
@@ -41,8 +37,18 @@ export default function ARViewPage() {
   const modelUrl = models[id];
 
   const videoRef = useRef<HTMLVideoElement>(null);
-  const groupRef = useRef<THREE.Group>(null);
   const [cameraStarted, setCameraStarted] = useState(false);
+  const [placedItems, setPlacedItems] = useState<{ position: THREE.Vector3; scale: number }[]>([]);
+  const [scaleSpring, api] = useSpring(() => ({ scale: 0.5 }));
+
+  const cameraRef = useRef<THREE.Camera | null>(null);
+
+  const bind = useGesture({
+    onPinch: ({ offset: [d] }) => {
+      const s = THREE.MathUtils.clamp(d / 100 + 0.5, 0.2, 2);
+      api.start({ scale: s });
+    },
+  });
 
   const startCamera = async () => {
     try {
@@ -66,10 +72,18 @@ export default function ARViewPage() {
     }
   };
 
+  const handleCanvasClick = () => {
+    if (!cameraRef.current) return;
+    const direction = new THREE.Vector3();
+    cameraRef.current.getWorldDirection(direction);
+    const newPosition = cameraRef.current.position.clone().add(direction.multiplyScalar(2)).setY(0);
+    setPlacedItems([...placedItems, { position: newPosition, scale: scaleSpring.scale.get() }]);
+  };
+
   if (!modelUrl) return <div>Product not found</div>;
 
   return (
-    <div style={{ position: "relative", height: "100vh", overflow: "hidden" }}>
+    <div style={{ position: "relative", height: "100vh", overflow: "hidden" }} {...bind()}>
       {/* Camera Background */}
       <video
         ref={videoRef}
@@ -100,13 +114,24 @@ export default function ARViewPage() {
             zIndex: 2,
           }}
         >
-          <Canvas>
+          <Canvas
+            shadows
+            onCreated={({ camera }) => {
+              cameraRef.current = camera;
+            }}
+            onClick={handleCanvasClick}
+          >
             <ambientLight intensity={0.8} />
             <directionalLight position={[10, 10, 5]} intensity={1} />
             <Suspense fallback={null}>
-              <DragControls>
-                <FurnitureModel url={modelUrl} groupRef={groupRef} />
-              </DragControls>
+              {placedItems.map((item, index) => (
+                <PlacedModel
+                  key={index}
+                  url={modelUrl}
+                  position={item.position}
+                  scale={item.scale}
+                />
+              ))}
               <OrbitControls enableZoom={true} enablePan={false} />
             </Suspense>
           </Canvas>
