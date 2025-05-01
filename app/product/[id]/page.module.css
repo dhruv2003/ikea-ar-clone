@@ -389,6 +389,26 @@
   color: #111;
 }
 
+/* Cart icon styling */
+.cartIcon {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1000;
+  cursor: pointer;
+}
+
+.cartSvg {
+  width: 32px;
+  height: 32px;
+  color: #333;
+  transition: color 0.2s ease;
+}
+
+.cartSvg:hover {
+  color: #0058a3;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .productTitle {
