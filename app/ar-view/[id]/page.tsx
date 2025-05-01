@@ -6,9 +6,6 @@ import { Suspense, useRef, useState, useEffect } from "react";
 import { OrbitControls, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 
-// Added for gesture handling
-import { useGesture } from "@use-gesture/react";
-
 const models: { [key: string]: string } = {
   "chair-1": "/chair_model.glb",
   "table-1": "/table_model.glb",
@@ -34,6 +31,18 @@ function PlacedModel({
   );
 }
 
+interface PlacedItem {
+  position: THREE.Vector3;
+  scale: number;
+  rotation: number;
+  id: string;
+}
+
+interface TouchGestureState {
+  lastPinchDistance: number | null;
+  lastAngle: number | null;
+}
+
 export default function ARViewPage() {
   const params = useParams();
   const [id, setId] = useState<string | null>(null);
@@ -54,11 +63,10 @@ export default function ARViewPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [cameraStarted, setCameraStarted] = useState(false);
-  const [placedItems, setPlacedItems] = useState<{ position: THREE.Vector3; scale: number; rotation: number; id: string }[]>([]);
-  const [scale, setScale] = useState(0.5);
+  const [placedItems, setPlacedItems] = useState<PlacedItem[]>([]);
+  const [scale] = useState(0.5);
   const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(null);
   const [showControls, setShowControls] = useState(false);
-
   const cameraRef = useRef<THREE.Camera | null>(null);
 
   const startCamera = async () => {
@@ -87,27 +95,18 @@ export default function ARViewPage() {
     }
   };
 
-  // Add gesture handlers
   useEffect(() => {
     if (!containerRef.current || !cameraStarted) return;
 
     const handleTouchStart = (e: TouchEvent) => {
       if (e.touches.length === 1) {
-        // Single touch might be for selecting an item
-        const touch = e.touches[0];
-        const rect = containerRef.current!.getBoundingClientRect();
-        const x = (touch.clientX - rect.left) / rect.width * 2 - 1;
-        const y = -((touch.clientY - rect.top) / rect.height) * 2 + 1;
-
-        // Use raycaster to select item (simplified here - actual implementation would use raycasting)
         setSelectedItemIndex(null);
       }
     };
 
     const handleTouchMove = (e: TouchEvent) => {
       if (selectedItemIndex !== null && e.touches.length === 1) {
-        // Moving the selected item
-        e.preventDefault(); // Prevent scrolling
+        e.preventDefault();
       }
     };
 
@@ -117,16 +116,14 @@ export default function ARViewPage() {
         const touch1 = e.touches[0];
         const touch2 = e.touches[1];
 
-        // Calculate distance between touches
         const dx = touch1.clientX - touch2.clientX;
         const dy = touch1.clientY - touch2.clientY;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
-        // Store the distance for pinch gesture
-        (e.currentTarget as any).lastPinchDistance = (e.currentTarget as any).lastPinchDistance || distance;
+        const gestureState = containerRef.current as HTMLDivElement & TouchGestureState;
+        gestureState.lastPinchDistance = gestureState.lastPinchDistance || distance;
 
-        // Calculate scale change
-        const scaleChange = distance / (e.currentTarget as any).lastPinchDistance;
+        const scaleChange = distance / (gestureState.lastPinchDistance || distance);
 
         if (scaleChange !== 1 && !isNaN(scaleChange)) {
           setPlacedItems(items =>
@@ -140,7 +137,7 @@ export default function ARViewPage() {
           );
         }
 
-        (e.currentTarget as any).lastPinchDistance = distance;
+        gestureState.lastPinchDistance = distance;
       }
     };
 
@@ -150,17 +147,15 @@ export default function ARViewPage() {
         const touch1 = e.touches[0];
         const touch2 = e.touches[1];
 
-        // Calculate angle between touches
         const angle = Math.atan2(
           touch2.clientY - touch1.clientY,
           touch2.clientX - touch1.clientX
         );
 
-        // Store the angle for rotation gesture
-        (e.currentTarget as any).lastAngle = (e.currentTarget as any).lastAngle || angle;
+        const gestureState = containerRef.current as HTMLDivElement & TouchGestureState;
+        gestureState.lastAngle = gestureState.lastAngle || angle;
 
-        // Calculate rotation change
-        const rotationChange = angle - (e.currentTarget as any).lastAngle;
+        const rotationChange = angle - (gestureState.lastAngle || angle);
 
         if (!isNaN(rotationChange)) {
           setPlacedItems(items =>
@@ -173,13 +168,14 @@ export default function ARViewPage() {
           );
         }
 
-        (e.currentTarget as any).lastAngle = angle;
+        gestureState.lastAngle = angle;
       }
     };
 
     const handleTouchEnd = () => {
-      (containerRef.current as any).lastPinchDistance = null;
-      (containerRef.current as any).lastAngle = null;
+      const gestureState = containerRef.current as HTMLDivElement & TouchGestureState;
+      gestureState.lastPinchDistance = null;
+      gestureState.lastAngle = null;
     };
 
     const container = containerRef.current;
@@ -196,12 +192,11 @@ export default function ARViewPage() {
       container.removeEventListener("touchmove", handleRotateGesture);
       container.removeEventListener("touchend", handleTouchEnd);
     };
-  }, [cameraStarted, selectedItemIndex, containerRef.current]);
+  }, [cameraStarted, selectedItemIndex]);
 
   const handleCanvasClick = () => {
     if (!cameraRef.current) return;
 
-    // If an item is selected, deselect it
     if (selectedItemIndex !== null) {
       setSelectedItemIndex(null);
       return;
@@ -211,7 +206,6 @@ export default function ARViewPage() {
     cameraRef.current.getWorldDirection(direction);
     const newPosition = cameraRef.current.position.clone().add(direction.multiplyScalar(2)).setY(0);
 
-    // Add unique ID to each placed item
     const newItem = {
       position: newPosition,
       scale,
@@ -221,15 +215,13 @@ export default function ARViewPage() {
 
     setPlacedItems([...placedItems, newItem]);
 
-    // Select the newly placed item
     setSelectedItemIndex(placedItems.length);
     setShowControls(true);
   };
 
-  // Add function to delete a selected item
   const handleDeleteItem = () => {
     if (selectedItemIndex !== null) {
-      setPlacedItems(items => items.filter((_, index) => index !== selectedItemIndex));
+      setPlacedItems(items => items.filter((_, idx) => idx !== selectedItemIndex));
       setSelectedItemIndex(null);
       setShowControls(false);
     }
@@ -278,7 +270,7 @@ export default function ARViewPage() {
             <ambientLight intensity={0.8} />
             <directionalLight position={[10, 10, 5]} intensity={1} />
             <Suspense fallback={null}>
-              {placedItems.map((item, index) => (
+              {placedItems.map((item) => (
                 <PlacedModel
                   key={item.id}
                   url={modelUrl}
@@ -291,7 +283,6 @@ export default function ARViewPage() {
             </Suspense>
           </Canvas>
 
-          {/* Controls UI */}
           {showControls && selectedItemIndex !== null && (
             <div
               style={{
@@ -372,7 +363,6 @@ export default function ARViewPage() {
             </div>
           )}
 
-          {/* Gesture instruction tooltip */}
           {placedItems.length > 0 && (
             <div
               style={{

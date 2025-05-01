@@ -2,20 +2,21 @@
 
 import { useState, useEffect } from 'react';
 import styles from './InstallPrompt.module.css';
+import Image from 'next/image';
 
 export default function InstallPrompt() {
   const [showPrompt, setShowPrompt] = useState(false);
-  const [installEvent, setInstallEvent] = useState<any>(null);
+  const [installEvent, setInstallEvent] = useState<BeforeInstallPromptEvent | null>(null);
   const [isIOS, setIsIOS] = useState(false);
 
   useEffect(() => {
     // Check if it's iOS
-    const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+    const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as Window & { MSStream?: unknown }).MSStream;
     setIsIOS(isIOSDevice);
     
     // Check if already installed
     const isAppInstalled = window.matchMedia('(display-mode: standalone)').matches 
-      || (window.navigator as any).standalone 
+      || (navigator as Navigator & { standalone?: boolean }).standalone 
       || document.referrer.includes('android-app://');
     
     if (isAppInstalled) {
@@ -26,7 +27,7 @@ export default function InstallPrompt() {
     if (!isIOSDevice) {
       const handler = (e: Event) => {
         e.preventDefault();
-        setInstallEvent(e);
+        setInstallEvent(e as BeforeInstallPromptEvent);
         setShowPrompt(true);
       };
 
@@ -84,10 +85,12 @@ export default function InstallPrompt() {
         <button className={styles.closeButton} onClick={handleClose}>×</button>
         
         <div className={styles.promptHeader}>
-          <img 
+          <Image 
             src="/icons/icon-192.png" 
             alt="IKEA AR App" 
-            className={styles.appIcon} 
+            className={styles.appIcon}
+            width={40}
+            height={40}
           />
           <h3>Install IKEA AR App</h3>
         </div>
@@ -105,8 +108,8 @@ export default function InstallPrompt() {
                   <path d="M8.59 16.59L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.59Z" fill="currentColor" />
                 </svg>
               </span> on your browser</li>
-              <li>Select "Add to Home Screen"</li>
-              <li>Tap "Add" in the top right</li>
+              <li>Select &ldquo;Add to Home Screen&rdquo;</li>
+              <li>Tap &ldquo;Add&rdquo; in the top right</li>
             </ol>
           </div>
         ) : (
@@ -117,4 +120,10 @@ export default function InstallPrompt() {
       </div>
     </div>
   );
+}
+
+// Define the type for the BeforeInstallPromptEvent which is not yet in standard TypeScript definitions
+interface BeforeInstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
 }
