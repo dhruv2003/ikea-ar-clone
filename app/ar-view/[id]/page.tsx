@@ -2,7 +2,7 @@
 
 import { Canvas } from "@react-three/fiber";
 import { useParams } from "next/navigation";
-import { Suspense, useRef, useState } from "react";
+import { Suspense, useRef, useState, useEffect } from "react";
 import { OrbitControls, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 
@@ -31,8 +31,20 @@ function PlacedModel({
 
 export default function ARViewPage() {
   const params = useParams();
-  const id = params?.id as string;
-  const modelUrl = models[id];
+  const [id, setId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (params?.id) {
+      setId(params.id as string);
+      setLoading(false);
+    } else {
+      setId(null);
+      setLoading(false);
+    }
+  }, [params]);
+
+  const modelUrl = id ? models[id] : null;
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const [cameraStarted, setCameraStarted] = useState(false);
@@ -43,20 +55,20 @@ export default function ARViewPage() {
 
   const startCamera = async () => {
     console.log("📷 Attempting to start camera");
-  
+
     try {
       if (!navigator.mediaDevices?.getUserMedia) {
         alert("Camera not supported on this device/browser.");
         return;
       }
-  
+
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: "environment" },
         audio: false,
       });
-  
+
       console.log("✅ Camera stream received");
-  
+
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         setCameraStarted(true);
@@ -75,7 +87,8 @@ export default function ARViewPage() {
     setPlacedItems([...placedItems, { position: newPosition, scale }]);
   };
 
-  if (!modelUrl) return <div>Product not found</div>;
+  if (loading) return <div>Loading...</div>;
+  if (!id || !modelUrl) return <div>Product not found</div>;
 
   return (
     <div style={{ position: "relative", height: "100vh", overflow: "hidden" }}>

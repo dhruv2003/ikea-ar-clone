@@ -4,7 +4,6 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import { useRouter } from "next/router"; // Import useRouter for navigation
 import styles from "./page.module.css";
 
 const products = {
@@ -85,7 +84,6 @@ const relatedProducts = [
 
 export default function ProductPage() {
   const params = useParams();
-  const router = useRouter(); // Initialize router
   const id = params?.id as string;
   const [selectedImage, setSelectedImage] = useState(0);
   const [addedToCart, setAddedToCart] = useState(false);
@@ -217,7 +215,6 @@ export default function ProductPage() {
               setAddedToCart(true);
               setTimeout(() => {
                 setAddedToCart(false);
-                router.push("/cart"); // Navigate to cart page
               }, 1000);
             }}
             style={{ marginBottom: '1rem' }}

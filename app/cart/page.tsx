@@ -1,16 +1,31 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import styles from "./page.module.css";
 
 export default function CartPage() {
-  // Simulated cart items
-  const cartItems = [
+  // Simulated cart items with useState to allow modifications
+  const [cartItems, setCartItems] = useState([
     { id: "chair-1", name: "POÄNG Chair", price: "₹5,999", quantity: 1 },
     { id: "table-1", name: "LISABO Table", price: "₹11,499", quantity: 1 },
-  ];
+  ]);
 
+  // Calculate total based on current cart items
   const total = cartItems.reduce((sum, item) => sum + parseInt(item.price.replace(/[^\d]/g, "")) * item.quantity, 0);
+
+  // Update quantity function
+  const updateQuantity = (id: string, newQuantity: number) => {
+    if (newQuantity < 1) return;
+    setCartItems(cartItems.map(item => 
+      item.id === id ? { ...item, quantity: newQuantity } : item
+    ));
+  };
+
+  // Remove item function
+  const removeItem = (id: string) => {
+    setCartItems(cartItems.filter(item => item.id !== id));
+  };
 
   return (
     <div className={styles.container}>
@@ -34,7 +49,19 @@ export default function CartPage() {
                   <span className={styles.itemName}>{item.name}</span>
                   <span className={styles.itemPrice}>{item.price}</span>
                 </div>
-                <span className={styles.itemQuantity}>Qty: {item.quantity}</span>
+                <div className={styles.itemControls}>
+                  <div className={styles.quantityControls}>
+                    <button onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</button>
+                    <span>{item.quantity}</span>
+                    <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
+                  </div>
+                  <button 
+                    className={styles.removeButton}
+                    onClick={() => removeItem(item.id)}
+                  >
+                    Remove
+                  </button>
+                </div>
               </li>
             ))}
           </ul>
@@ -43,7 +70,9 @@ export default function CartPage() {
               <span>Total:</span>
               <span>₹{total.toLocaleString()}</span>
             </div>
-            <button className={styles.checkoutButton}>Proceed to Checkout</button>
+            <Link href="/checkout">
+              <button className={styles.checkoutButton}>Proceed to Checkout</button>
+            </Link>
           </div>
         </div>
       )}

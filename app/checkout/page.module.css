@@ -3,7 +3,7 @@
   margin: 0 auto;
   padding: 2rem 1rem;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  color: #333;
+  color: #000; /* Text color black */
   background-color: #f7f7f7;
 }
 
@@ -12,12 +12,13 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
+  color: #000; /* Text color black */
 }
 
 .header h1 {
   font-size: 2rem;
   margin: 0;
-  color: #111;
+  color: #000; /* Changed from #111 to #000 */
 }
 
 .continueShopping {
@@ -49,7 +50,7 @@
   margin-top: 0;
   margin-bottom: 1.5rem;
   font-size: 1.25rem;
-  color: #111;
+  color: #000; /* Changed from #111 to #000 */
 }
 
 .cartItem {
@@ -89,7 +90,7 @@
 .itemName h3 {
   margin: 0;
   font-size: 1.1rem;
-  color: #111;
+  color: #000; /* Changed from #111 to #000 */
 }
 
 .itemName a {
@@ -104,7 +105,7 @@
 .removeButton {
   background: none;
   border: none;
-  color: #888;
+  color: #000; /* Changed from #888 to #000 */
   cursor: pointer;
   font-size: 0.875rem;
   padding: 0;
@@ -120,6 +121,7 @@
   justify-content: space-between;
   align-items: center;
   font-weight: 500;
+  color: #000; /* Added black color */
 }
 
 .quantityControls {
@@ -166,14 +168,14 @@
   margin-top: 0;
   margin-bottom: 1.5rem;
   font-size: 1.25rem;
-  color: #111;
+  color: #000; /* Changed from #111 to #000 */
 }
 
 .summaryRow {
   display: flex;
   justify-content: space-between;
   margin-bottom: 1rem;
-  color: #555;
+  color: #000; /* Changed from #555 to #000 */
   font-size: 0.95rem;
 }
 
@@ -184,7 +186,7 @@
   padding-top: 1rem;
   border-top: 1px solid #eee;
   font-weight: 600;
-  color: #111;
+  color: #000; /* Changed from #111 to #000 */
   font-size: 1.1rem;
 }
 
@@ -200,6 +202,7 @@
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 0.9rem;
+  color: #000; /* Added black color */
 }
 
 .couponCode button {
@@ -241,7 +244,7 @@
   justify-content: center;
   gap: 0.5rem;
   margin-top: 1rem;
-  color: #666;
+  color: #000; /* Text color black */
   font-size: 0.875rem;
 }
 
@@ -251,7 +254,7 @@
   align-items: center;
   height: 200px;
   font-size: 1.2rem;
-  color: #666;
+  color: #000; /* Changed from #666 to #000 */
 }
 
 .emptyCart {
@@ -260,7 +263,7 @@
   align-items: center;
   justify-content: center;
   padding: 3rem 0;
-  color: #666;
+  color: #000; /* Text color black */
 }
 
 .emptyCart p {
