@@ -1,0 +1,138 @@
+.promptOverlay {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  animation: fadeIn 0.3s;
+}
+
+.promptContainer {
+  background-color: white;
+  border-radius: 16px 16px 0 0;
+  padding: 20px;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+  animation: slideUp 0.3s;
+}
+
+.closeButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+}
+
+.promptHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.appIcon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  margin-right: 15px;
+}
+
+.promptHeader h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.promptText {
+  margin: 0 0 20px;
+  font-size: 16px;
+  color: #333;
+}
+
+.installButton {
+  background-color: #0058a3;
+  color: white;
+  border: none;
+  border-radius: 24px;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  width: 100%;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.installButton:hover {
+  background-color: #004f93;
+}
+
+.iosInstructions {
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding: 15px;
+}
+
+.iosInstructions p {
+  margin: 0 0 10px;
+  font-weight: 600;
+}
+
+.iosInstructions ol {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.iosInstructions li {
+  margin-bottom: 8px;
+}
+
+.shareIcon {
+  display: inline-flex;
+  align-items: center;
+  color: #0058a3;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .promptContainer {
+    background-color: #333;
+  }
+  
+  .promptText, .promptHeader h3 {
+    color: #fff;
+  }
+  
+  .closeButton {
+    color: #ddd;
+  }
+  
+  .iosInstructions {
+    background-color: #444;
+    color: #fff;
+  }
+}

@@ -1,0 +1,80 @@
+.themeToggle {
+  position: relative;
+  display: inline-block;
+}
+
+.toggleBtn {
+  background-color: transparent;
+  color: var(--text-color);
+  border: 1px solid var(--border-color, #ddd);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.toggleBtn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dark-theme .toggleBtn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background-color: var(--bg-color, white);
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 150px;
+  overflow: hidden;
+  z-index: 10;
+  opacity: 0;
+  transform: translateY(-10px);
+  visibility: hidden;
+  transition: opacity 0.2s, transform 0.2s, visibility 0.2s;
+}
+
+.themeToggle:hover .menu,
+.themeToggle:focus-within .menu {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  padding: 10px 14px;
+  width: 100%;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  color: var(--text-color, #333);
+  transition: background-color 0.2s;
+}
+
+.menuItem:hover {
+  background-color: var(--hover-bg, #f5f5f5);
+}
+
+.menuItem.active {
+  background-color: var(--active-bg, #e6f7ff);
+  font-weight: 500;
+}
+
+.icon {
+  margin-right: 8px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+}
+
+/* Dark theme styles are handled by global CSS variables */
