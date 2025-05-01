@@ -6,8 +6,6 @@ import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/router"; // Import useRouter for navigation
 import styles from "./page.module.css";
-import { Canvas } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
 
 const products = {
   "chair-1": {
